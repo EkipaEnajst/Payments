@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.ekipaenajst</groupId>
-        <artifactId>accounts</artifactId>
+        <artifactId>payments</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>payments</artifactId>
+    <artifactId>storitve</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -35,6 +35,13 @@
             <groupId>com.kumuluz.ee.rest-client</groupId>
             <artifactId>kumuluzee-rest-client</artifactId>
         </dependency-->
+
+        <!-- https://mvnrepository.com/artifact/com.stripe/stripe-java -->
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.ekipaenajst</groupId>
             <artifactId>entitete</artifactId>

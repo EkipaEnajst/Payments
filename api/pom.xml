@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.ekipaenajst</groupId>
-        <artifactId>accounts</artifactId>
+        <artifactId>payments</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>payments</artifactId>
+    <artifactId>api</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -48,6 +48,7 @@
     </dependencies>
 
     <build>
+        <finalName>payments-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>com.kumuluz.ee</groupId>
