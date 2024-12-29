@@ -1,6 +1,11 @@
 package org.ekipaenajst.beans;
 
+import java.util.Map;
+import com.stripe.Stripe;
 import com.stripe.model.Charge;
+import com.stripe.model.PaymentIntent;
+import com.stripe.exception.StripeException;
+import com.stripe.param.PaymentIntentCreateParams;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Currency;
@@ -8,24 +13,18 @@ import java.util.Currency;
 @ApplicationScoped
 public class StripeZrno {
 
-    private Currency currency;
+    //private Currency currency; //ta currency ne pride glih prov rn
 
-    @Value("${stripe.secret-key}")
-    private String secretKey;
+    private final String secretKey = System.getenv("${stripe.secret-key}");
 
-    /*public Charge getCharge() {
-        // TODO ....
-        return null;
-    }*/
-
-    public StripeService() {
+    public void StripeService() {
         Stripe.apiKey = secretKey;
     }
 
     public PaymentIntent createPaymentIntent(Long amount) throws StripeException {
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount(amount)
-                .setCurrency(currency)
+                .setCurrency("eur")
                 .build();
 
         return PaymentIntent.create(params);
@@ -35,7 +34,7 @@ public class StripeZrno {
     public Charge createCharge(String token, Long amount) throws StripeException {
         return Charge.create(Map.of(
                 "amount", amount,
-                "currency", currency,
+                "currency", "eur",
                 "source", token
         ));
     }

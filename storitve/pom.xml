@@ -41,11 +41,6 @@
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.ekipaenajst</groupId>
-            <artifactId>entitete</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
