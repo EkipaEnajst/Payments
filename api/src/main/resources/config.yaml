@@ -5,3 +5,6 @@ kumuluzee:
       username: postgres
       password: postgres
       max-pool-size: 20
+
+stripe:
+  secret-key: "omgggggggggg"

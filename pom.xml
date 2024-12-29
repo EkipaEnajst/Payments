@@ -11,7 +11,6 @@
     <modules>
         <module>api</module>
         <module>storitve</module>
-        <module>entitete</module>
     </modules>
 
     <properties>
@@ -129,6 +128,30 @@
                 <version>${keycloak.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.stripe</groupId>
+                <artifactId>stripe-java</artifactId>
+                <version>28.2.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>2.25.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
+                <version>2.25.1</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.stripe/stripe-java -->
+            <dependency>
+                <groupId>com.stripe</groupId>
+                <artifactId>stripe-java</artifactId>
+                <version>28.2.0</version>
+            </dependency>
 
 
 
