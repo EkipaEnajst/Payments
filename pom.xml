@@ -11,6 +11,7 @@
     <modules>
         <module>api</module>
         <module>storitve</module>
+        <module>entitete</module>
     </modules>
 
     <properties>
@@ -111,8 +112,6 @@
                 <groupId>org.ekipaenajst</groupId>
                 <artifactId>entitete</artifactId>
                 <version>${project.version}</version>
-
-
             </dependency>
 
             <dependency>

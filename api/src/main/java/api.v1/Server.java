@@ -5,17 +5,23 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.*;
 
-@WebServlet("/checkout")
-public class Server extends HttpServlet {
+@Path("checkout")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+@ApplicationScoped
+public class Server {
 
-    @Override
+    @PostConstruct
     public void init() {
         // Set your secret Stripe API key during initialization.
         try {
@@ -27,16 +33,16 @@ public class Server extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String YOUR_DOMAIN = "http://localhost:4242";
+    @GET
+    public Response h() throws ServletException, IOException {
+        String YOUR_DOMAIN = "http://localhost:4200";
 
         // Create Stripe session sparams
         SessionCreateParams params =
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl(YOUR_DOMAIN + "/success.html")
-                        .setCancelUrl(YOUR_DOMAIN + "/cancel.html")
+                        .setSuccessUrl(YOUR_DOMAIN + "/success")
+                        .setCancelUrl(YOUR_DOMAIN + "/cancel")
                         .addLineItem(
                                 SessionCreateParams.LineItem.builder()
                                         .setQuantity(1L)
@@ -53,7 +59,8 @@ public class Server extends HttpServlet {
         }
 
         // Redirect to Stripe Checkout session URL
-        response.sendRedirect(session.getUrl());
+        //response.sendRedirect(session.getUrl());
+        return Response.status(Response.Status.CREATED).entity(session).build();
     }
 
     /*public static void main(String[] args) throws Exception {
