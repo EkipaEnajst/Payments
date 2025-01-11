@@ -5,6 +5,7 @@ import org.ekipaenajst.entitete.*;
 import org.ekipaenajst.beans.ParkirninaZrno;
 
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -15,12 +16,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
+import java.util.Map;
 
 @Path("parkirnine")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped
 public class Server {
+
+    private String frontendURL;
+
+    @PostConstruct
+    public void init() {
+
+        Map<String,String> env = System.getenv();
+
+        frontendURL = env.get("FRONTEND_URL");
+    }
 
     @Inject
     private ParkirninaZrno parkirninaZrno;
@@ -34,7 +46,10 @@ public class Server {
         QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
         List<Parkirnina> parkirnine = parkirninaZrno.getParkirnine(query);
 
-        return Response.status(Response.Status.OK).entity(parkirnine).build();
+        return Response.status(Response.Status.OK)
+                .header("Access-Control-Allow-Origin", frontendURL)
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .entity(parkirnine).build();
     }
 
     @GET
@@ -43,7 +58,10 @@ public class Server {
 
         Parkirnina parkirnina = parkirninaZrno.getParkirninaById(id);
 
-        return Response.status(Response.Status.OK).entity(parkirnina).build();
+        return Response.status(Response.Status.OK)
+                .header("Access-Control-Allow-Origin", frontendURL)
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .entity(parkirnina).build();
     }
 
     @POST
@@ -54,7 +72,10 @@ public class Server {
             return Response.status(Response.Status.FOUND).build();
         }*/
 
-        return Response.status(Response.Status.CREATED).entity(parkirnina).build();
+        return Response.status(Response.Status.CREATED)
+                .header("Access-Control-Allow-Origin", frontendURL)
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .entity(parkirnina).build();
     }
 
     // ZA TE TRI NISM ZIHR KAJ VRNIT (bi moral bit ok??????????)
@@ -64,7 +85,10 @@ public class Server {
 
         parkirninaZrno.updateParkirnina(parkirnina);
 
-        return Response.status(Response.Status.OK).entity(parkirnina).build();
+        return Response.status(Response.Status.OK)
+                .header("Access-Control-Allow-Origin", frontendURL)
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .entity(parkirnina).build();
     }
 
 
@@ -76,6 +100,9 @@ public class Server {
 
         parkirninaZrno.deleteParkirnina(parkirnina);
 
-        return Response.noContent().build();
+        return Response.noContent()
+                .header("Access-Control-Allow-Origin", frontendURL)
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
     }
 }
