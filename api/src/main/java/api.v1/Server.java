@@ -1,80 +1,81 @@
 package api.v1;
 
-import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import org.ekipaenajst.entitete.*;
+import org.ekipaenajst.beans.ParkirninaZrno;
 
-import javax.annotation.PostConstruct;
+
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
-@Path("checkout")
+@Path("parkirnine")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped
 public class Server {
 
-    @PostConstruct
-    public void init() {
-        // Set your secret Stripe API key during initialization.
-        try {
-            // Set Stripe API Key in a static block
-            Stripe.apiKey = "sk_test_C8YmBFG9x8nTv1ZnC4kFd4CJ004r8nk3Rx"; // Ensure this is valid
-        } catch (Exception e) {
-            e.printStackTrace(); // Log any issues during initialization
-            throw new RuntimeException("Failed to initialize Stripe API key", e);
-        }
+    @Inject
+    private ParkirninaZrno parkirninaZrno;
+
+    @Context
+    protected UriInfo uriInfo;
+
+    @GET
+    public Response vrniParkirnine(){
+
+        QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
+        List<Parkirnina> parkirnine = parkirninaZrno.getParkirnine(query);
+
+        return Response.status(Response.Status.OK).entity(parkirnine).build();
     }
 
     @GET
-    public Response h() throws ServletException, IOException {
-        String YOUR_DOMAIN = "http://localhost:4200";
+    @Path("{id}")
+    public Response vrniParkirnino(@PathParam("id") int id){
 
-        // Create Stripe session sparams
-        SessionCreateParams params =
-                SessionCreateParams.builder()
-                        .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl(YOUR_DOMAIN + "/success")
-                        .setCancelUrl(YOUR_DOMAIN + "/cancel")
-                        .addLineItem(
-                                SessionCreateParams.LineItem.builder()
-                                        .setQuantity(1L)
-                                        .setPrice("{{PRICE_ID}}") // Provide your Price ID
-                                        .build())
-                        .build();
+        Parkirnina parkirnina = parkirninaZrno.getParkirninaById(id);
 
-        // Create a session
-        Session session = null;
-        try {
-            session = Session.create(params);
-        } catch (StripeException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Redirect to Stripe Checkout session URL
-        //response.sendRedirect(session.getUrl());
-        return Response.status(Response.Status.CREATED).entity(session).build();
+        return Response.status(Response.Status.OK).entity(parkirnina).build();
     }
 
-    /*public static void main(String[] args) throws Exception {
-        // You can use an embedded server like Jetty to run your servlet
-        org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(4242);
-        org.eclipse.jetty.servlet.ServletContextHandler context = new org.eclipse.jetty.servlet.ServletContextHandler();
-        context.setContextPath("/");
-        server.setHandler(context);
+    @POST
+    public Response dodajParkirnino(Parkirnina parkirnina){
 
-        // Add your servlet class to handle POST requests
-        context.addServlet(Server.class, "/checkout");
+        parkirninaZrno.createParkirnina(parkirnina); //če kupiš več listkov hkrati je literally skillissue
+        /*if (==null) {
+            return Response.status(Response.Status.FOUND).build();
+        }*/
 
-        // Start the server
-        server.start();
-        server.join();
-    }*/
+        return Response.status(Response.Status.CREATED).entity(parkirnina).build();
+    }
+
+    // ZA TE TRI NISM ZIHR KAJ VRNIT (bi moral bit ok??????????)
+    @PUT
+    // @Path(blabla)
+    public Response posodobiParkirnino(Parkirnina parkirnina){
+
+        parkirninaZrno.updateParkirnina(parkirnina);
+
+        return Response.status(Response.Status.OK).entity(parkirnina).build();
+    }
+
+
+    @DELETE
+    @Path("{id}")
+    public Response izbrisiParkirnino(@PathParam("id") int id){
+
+        Parkirnina parkirnina = parkirninaZrno.getParkirninaById(id);
+
+        parkirninaZrno.deleteParkirnina(parkirnina);
+
+        return Response.noContent().build();
+    }
 }
